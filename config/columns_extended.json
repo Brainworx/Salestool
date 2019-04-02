@@ -1,0 +1,20 @@
+[
+  {"name":"id","title":"ID","breakpoints":"xs sm","type":"number","style":{"width":80,"maxWidth":80}},
+  {"name":"Name","title":"Naam"},
+  {"name":"Apbnumber","title":"Apd nummer"},
+  {"name":"Address","title":"Adres"},
+  {"name":"City","title":"Stad"},
+  {"name":"Zipcode","title":"Postcode"},
+  {"name":"Phone","title":"Telefoon"},
+  {"name":"Email","title":"Email"},
+  {"name":"Website","title":"Website"},
+  {"name":"Mon","title":"Maandag"},
+  {"name":"Tue","title":"Dinsdag"},
+  {"name":"Wed","title":"Woensdag"},
+  {"name":"Thu","title":"Donderdag"},
+  {"name":"Fri","title":"Vrijdag"},
+  {"name":"Sat","title":"Zaterdag"},
+  {"name":"Sun","title":"Zondag"},
+  {"name":"State","title":"Status"}
+]
+

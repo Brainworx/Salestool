@@ -4,3 +4,6 @@
 			color:red;
 			margin-left: 4px;
 		}
+.hidden {
+	display : none;
+}
