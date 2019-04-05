@@ -1,157 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
- 	<!-- Required meta tags -->
-    <meta charset="utf-8">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<!-- FooTable Bootstrap CSS -->
-	<link href="css/footable.bootstrap.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-<title>Zorgpunt Salestool</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="public/css/style.css" rel="stylesheet" />
+    <link href="http://js-grid.com/css/jsgrid.min.css" rel="stylesheet" />
+    <link href="http://js-grid.com/css/jsgrid-theme.min.css" rel="stylesheet" />
+    <title>JSGrid and PHP Sample</title>
 </head>
 <body>
-<h1>Salestool</h1>
-<table id="locations-overview" class="table" data-paging="true" data-filtering="true" data-sorting="true" data-editing="true" data-state="true"></table>
-<!-- Editing Modal Markup -->
-<div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
-	<div class="modal-dialog" role="document">
-		<form class="modal-content form-horizontal" id="editor">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h4 class="modal-title" id="editor-title">Add Row</h4>
-			</div>
-			<div class="modal-body">
-				<input type="number" id="id" name="id" class="hidden"/>
-				<div class="form-group required">
-					<label for="name" class="col-sm-3 control-label">Naam</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="name" name="name" placeholder="Naam" required>
-					</div>
-				</div>
-				<div class="form-group required">
-					<label for="apb" class="col-sm-3 control-label">Apb nummer</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="apb" name="apb" placeholder="Apb nummer" required>
-					</div>
-				</div>
-				<div class="form-group required">
-					<label for="address" class="col-sm-3 control-label">Adres</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="address" name="address" placeholder="Straat en nr" required>
-					</div>
-				</div>
-				<div class="form-group required">
-					<label for="zipcode" class="col-sm-3 control-label">Postcode</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="Postcode" required>
-					</div>
-				</div>
-				<div class="form-group required">
-					<label for="city" class="col-sm-3 control-label">Stad</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="city" name="city" placeholder="Stad" required>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="phone" class="col-sm-3 control-label">Telefoon</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="phone" name="phone" placeholder="Telefoon">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="email" class="col-sm-3 control-label">Email</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="email" name="email" placeholder="Email">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="website" class="col-sm-3 control-label">Website</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="website" name="website" placeholder="Website">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="openingshours" class="col-sm-3 control-label">Openingsuren</label>
-					<div class="form-group">
-						<label for="mon" class="col-sm-3 control-label">Maandag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="mon" name="mon" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="tue" class="col-sm-3 control-label">Dinsdag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="tue" name="tue" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="wed" class="col-sm-3 control-label">Woensdag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="wed" name="wed" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="thu" class="col-sm-3 control-label">Donderdag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="thu" name="thu" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="fri" class="col-sm-3 control-label">Vrijdag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="fri" name="fri" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="sat" class="col-sm-3 control-label">Zaterdag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="sat" name="sat" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="sun" class="col-sm-3 control-label">Zondag</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="zon" name="zon" placeholder="8:00-12:00 13:00-16:00">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="state" class="col-sm-3 control-label">Status</label>
-					<div class="col-sm-9">
-						<select class="form-control" id="state" name="state">
-							<option value="1">Actief</option>
-							<option value="0">Inactief</option>
-							<option value="-1">Niet mogelijk - exclusiviteit</option>
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary">Bewaar</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-			</div>
-		</form>
-	</div>
-</div>
+<header>
+    <h1>Zorgpunt locaties</h1>
+</header>
 
+<div id="jsGrid"></div>
 
-
-
-<!-- Placed at the end of the document so the pages load faster --
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
--->
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
- 
-<!-- Add in FooTable itself -->
-<script src="js/footable.js"></script>
-<script src="js/script.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://js-grid.com/js/jsgrid.min.js"></script>
+<script src="public/js/script.js"></script>
 </body>
 </html>
