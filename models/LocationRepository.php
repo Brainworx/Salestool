@@ -66,18 +66,23 @@ class LocationRepository {
     }
 
     public function insert($data) {
-        $sql = "INSERT INTO location ( name, apbnumber, address, zipcode, city, phone, email, website) 
-        		VALUES ( :name, :apbnumber,  :address, :zipcode, :city, :phone, :email, :website)";
-        $q = $this->db->prepare($sql);
-        $q->bindParam(":name", $data["name"]);
-        $q->bindParam(":apbnumber", $data["apbnumber"]);
-        $q->bindParam(":address", $data["address"]);
-        $q->bindParam(":zipcode", $data["zipcode"]);
-        $q->bindParam(":city", $data["city"]);
-        $q->bindParam(":phone", $data["phone"]);
-        $q->bindParam(":email", $data["email"]);
-        $q->bindParam(":website", $data["website"]);
+    	$data = $this->getLongLat($data);
+    	$sql = "INSERT INTO location ( name, apbnumber,lattitude, longitude, address, zipcode, city, phone, email, website)
+        		VALUES ( :name, :apbnumber, :lattitude, :longitude, :address, :zipcode, :city, :phone, :email, :website)";
+    	$q = $this->db->prepare($sql);
+   		$q->bindParam(":name", $data["name"]);
+   		$q->bindParam(":apbnumber", $data["apbnumber"]);
+   		$q->bindParam(":longitude", $data["longitude"], PDO::PARAM_INT);
+   		$q->bindParam(":lattitude", $data["lattitude"], PDO::PARAM_INT);
+   		$q->bindParam(":address", $data["address"]);
+    	$q->bindParam(":zipcode", $data["zipcode"]);
+   		$q->bindParam(":city", $data["city"]);
+   		$q->bindParam(":phone", $data["phone"]);
+   		$q->bindParam(":email", $data["email"]);
+   		$q->bindParam(":website", $data["website"]);
+    	
         $q->execute();
+    	
         return $this->getById($this->db->lastInsertId());
     }
 
@@ -105,6 +110,21 @@ class LocationRepository {
         $q = $this->db->prepare($sql);
         $q->bindParam(":id", $id, PDO::PARAM_INT);
         $q->execute();
+    }
+    private function getLongLat($data){
+    	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);
+    	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAzZADznz9S1AWY4zIRVk8HLibcSV1yOtM&address={$address}";
+    	$resp_json = file_get_contents($url);
+    	$resp      = json_decode($resp_json, true);
+    	
+    	if ($resp['status'] == 'OK') {
+    		// get the important data
+    		$data["lattitude"] = $resp['results'][0]['geometry']['location']['lat'];
+    		$data["longitude"] = $resp['results'][0]['geometry']['location']['lng'];  
+    		return $data;  	
+    	} else {
+    		return false;
+    	}	 
     }
 
 }

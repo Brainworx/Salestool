@@ -6,7 +6,7 @@
     <link href="public/css/style.css" rel="stylesheet" />
     <link href="http://js-grid.com/css/jsgrid.min.css" rel="stylesheet" />
     <link href="http://js-grid.com/css/jsgrid-theme.min.css" rel="stylesheet" />
-    <title>JSGrid and PHP Sample</title>
+    <title>Zorgpunt Salestool</title>
 </head>
 <body>
 <header>
@@ -15,8 +15,16 @@
 
 <div id="jsGrid"></div>
 
+  <div id="floating-panel">
+    <input id="address" type="text" value="Sydney, NSW">
+    <input id="locate" type="button" value="Zoek" >
+  </div>
+  
+<div id="map"></div>
+
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="http://js-grid.com/js/jsgrid.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzZADznz9S1AWY4zIRVk8HLibcSV1yOtM"></script>
 <script src="public/js/script.js"></script>
 </body>
 </html>

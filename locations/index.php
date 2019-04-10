@@ -8,7 +8,7 @@ $locations = new LocationRepository($db);
 
 
 switch($_SERVER["REQUEST_METHOD"]) {
-    case "GET":
+    case "GET"://get with filter options
         $result = $locations->getAll(array(
             "name" => $_GET["name"],
             "apbnumber" => $_GET["apbnumber"],
@@ -43,6 +43,7 @@ switch($_SERVER["REQUEST_METHOD"]) {
 //             "phone" => $_POST["phone"],
 //             "email" => $_POST["email"],
 //             "website" => $_POST["website"],
+//             
 //             "lattitude" => $_POST["lattitude"],
 //             "longitude" => $_POST["longitude"],
 //             "create_dt" => $_POST["create_dt"],

@@ -27,3 +27,14 @@ h1 {
 a {
     color: #00B7FF;
 }
+#map {
+    height: 425px;
+}
+#floating-panel {
+    position: relative;
+    background-color: #fff;
+    padding: 5px;
+    font-family: 'Roboto','sans-serif';
+    line-height: 30px;
+    padding-left: 20px;
+}
