@@ -8,6 +8,7 @@ class LocationRepository {
 
     public function __construct(PDO $db) {
         $this->db = $db;
+        $config = include("../db/config.php");
     }
 
     private function read($row) {
@@ -113,7 +114,8 @@ class LocationRepository {
     }
     private function getLongLat($data){
     	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);
-    	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAzZADznz9S1AWY4zIRVk8HLibcSV1yOtM&address={$address}";
+        $key       = $config["apikey"];
+    	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key={$key}&address={$address}";
     	$resp_json = file_get_contents($url);
     	$resp      = json_decode($resp_json, true);
     	
