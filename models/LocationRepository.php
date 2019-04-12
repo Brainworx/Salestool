@@ -5,10 +5,11 @@ include "Location.php";
 class LocationRepository {
 
     protected $db;
+    protected $config;
 
     public function __construct(PDO $db) {
         $this->db = $db;
-        $config = include("../db/config.php");
+        $this->config = include("../db/config.php");
     }
 
     private function read($row) {
@@ -50,7 +51,7 @@ class LocationRepository {
 
         $sql = "SELECT * FROM location WHERE name LIKE :name AND apbnumber LIKE :apbnumber AND zipcode like :zipcode";// AND state = :state";
         if(!empty($state)){
-        	$sql += " AND state = ".$state;
+        	$sql .= " AND state = ".$state;
         }
         $q = $this->db->prepare($sql);
          $q->bindParam(":name", $name);
@@ -88,6 +89,7 @@ class LocationRepository {
     }
 
     public function update($data) {
+    	$data = $this->getLongLat($data);
         $sql = "UPDATE location SET name = :name, apbnumber = :apbnumber, lattitude = :lattitude, longitude = :longitude, address = :address,
         		zipcode = :zipcode, city = :city, phone = :phone, email = :email, website = :website, state = :state WHERE id = :id";
         $q = $this->db->prepare($sql);
@@ -104,6 +106,8 @@ class LocationRepository {
         $q->bindParam(":state", $data["state"], PDO::PARAM_INT);
         $q->bindParam(":id", $data["id"], PDO::PARAM_INT);
         $q->execute();
+        
+        return $this->getById($data["id"]);
     }
 
     public function remove($id) {
@@ -114,7 +118,7 @@ class LocationRepository {
     }
     private function getLongLat($data){
     	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);
-        $key       = $config["apikey"];
+        $key       = $this->config["apikey"];
     	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key={$key}&address={$address}";
     	$resp_json = file_get_contents($url);
     	$resp      = json_decode($resp_json, true);

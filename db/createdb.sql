@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `exclusivety` (
   `location_id` int(11) NOT NULL,
   `blocked_location_id` int(11) NOT NULL,
   `rule_active` tinyint(4) NOT NULL DEFAULT '1',
-  `ceate_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

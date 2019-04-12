@@ -7,14 +7,19 @@ $(function() {
          height: "30%",
          width: "100%",
          filtering: true,
-         inserting: true,
+         //inserting: true,
          editing: true,
          sorting: true,
          paging: true,
          autoload: true,
          pageSize: 10,
          pageButtonCount: 5,
-         deleteConfirm: "Ben je zeker dat je de locatie wenst te verwijderen?",
+         rowClick: function(args) {
+             showDetailsDialog("Edit", args.item);
+         },
+         deleteConfirm: function(item) {
+             return "Apotheek \"" + item.Name + "\" zal verwijderd worden. Ben je zeker?";
+         },
          controller: {
              loadData: function(filter) {
                  return $.ajax({
@@ -22,22 +27,6 @@ $(function() {
                      url: "locations/",
                      data: filter,
                      success: function(data, textStatus, request){data.forEach(showOnMap);}
-                 });
-             },
-             insertItem: function(item) {
-                 return $.ajax({
-                     type: "POST",
-                     url: "locations/",
-                     data: item,
-                     success: function(data, textStatus, request){showOnMap(data);}
-                 });
-             },
-             updateItem: function(item) {
-                 return $.ajax({
-                     type: "PUT",
-                     url: "locations/",
-                     data: item,
-                     success: function(data, textStatus, request){showOnMap(data);}
                  });
              },
              deleteItem: function(item) {
@@ -57,13 +46,189 @@ $(function() {
              { name: "city", title: "Stad", type: "text", width: 50, filtering: false },
              { name: "country", title: "Land", type: "text", width: 20 },
              { name: "state", type: "text", title: "Status" },
-             { type: "control" }
+             {
+                 type: "control",
+                 modeSwitchButton: false,
+                 editButton: false,
+                 headerTemplate: function() {
+                     return $("<button>").attr("type", "button").text("Nieuwe")
+                             .on("click", function () {
+                                 showDetailsDialog("Nieuwe", {});
+                             });
+                 }
+             }
          ]
      });
+	$("#detailsDialog").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 800,
+        overlay: {
+            opacity: 0.7,
+            background: "black"
+          },
+        close: function() {            
+            $("#detailsDialog").find(".error").removeClass("error");
+        }
+    });
+	$("#detailsDialog").validate({
+	        rules: {
+	            //name: "required",
+	        },
+	        messages: {
+	            //name: "Please enter name",
+	        },
+	        submitHandler: function() {
+	            formSubmitHandler();
+	        }
+	    });
+	var formSubmitHandler = $.noop;
+	 
+	var showDetailsDialog = function(dialogType, item) {
+//	        $("#name").val(client.Name);
+//	        $("#married").prop("checked", client.Married);
+	 
+	        formSubmitHandler = function() {
+	            saveItem(item, dialogType === "Nieuwe");
+	        };
+	        $('#detailsDialog').find('input').val(function (index, value) {
+	            return item[this.id];
+	        });
+	        $('#detailsDialog').find('select').val(function (index, value) {
+	            return item[this.id];
+	        });
+	        
+	        if(dialogType != "Nieuwe"){
+	        	$.ajax({
+	                type: "GET",
+	                url: "locations/",
+	                data:{ name: "", apbnumber: "", zipcode: "", country: "", state: "" }
+	            }).done(function(locations) {
+	            	$("#exlusivetygrid").jsGrid({
+	                height: "30%",
+	                width: "100%",
+	                filtering: false,
+	                inserting: true,
+	                editing: true,
+	                sorting: true,
+	                paging: true,
+	                autoload: true,
+	                pageSize: 10,
+	                pageButtonCount: 5,
+	                deleteConfirm: function(item) {
+	                    return "Blokkering zal verwijderd worden. Ben je zeker?";
+	                },
+	                controller: {
+	                    loadData: function(filter) {
+	                        return $.ajax({
+	                            type: "GET",
+	                            url: "exclusiveties/",
+	                            data: {location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""},
+	                            success: function(data, textStatus, request){
+	                            	 $("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
+	                     	        $("#detailsDialog").dialog( "option", "buttons", 
+	                     	        		  [
+	                     	        		    {
+	                     	        		      text: "Bewaar",
+	                     	        		      click: function() {
+	                     	        		    	  $("#detailsDialog").validate();
+	                     	        		    	  saveItem(item, dialogType === "Nieuwe");
+	                     	        		      }
+	                     	        		    },
+	                     	        		    {
+	                     	        		    	text: "Annuleer",
+	                     		        		    click: function() {
+	                     		        		    	$( this ).dialog( "close" );
+	                     		        		  }
+	                     	        		    }
+	                     	        		  ]
+	                     	        		);
+	                     	        
+	                     	        $("#detailsDialog").dialog("open");
+	                            }
+	                        });
+	                    },
+	                    insertItem: function(item) {
+	                        return $.ajax({
+	                            type: "POST",
+	                            url: "exclusiveties/",
+	                            data: item,
+	                            success: function(data, textStatus, request){}
+	                        });
+	                    },
+	                    updateItem: function(item) {
+	                        return $.ajax({
+	                            type: "PUT",
+	                            url: "exclusiveties/",
+	                            data: item,
+	                            success: function(data, textStatus, request){}
+	                        });
+	                    },
+	                    deleteItem: function(item) {
+	                        return $.ajax({
+	                            type: "DELETE",
+	                            url: "exclusiveties/",
+	                            data: item,
+	                            success: function(data, textStatus, request){}
+	                        });
+	                    }
+	                },
+	                fields: [
+	                    { name: "location_id",title:"Zorgpunt", type: "select", items: locations, valueField: "id", textField: "name" },
+	                    { name: "blocked_location_id",title:"Apotheek", type: "select", items: locations, valueField: "id", textField: "name" },
+	                    { name: "rule_active", type: "checkbox", title: "Ingeschakeld", sorting: false },
+	                    { type: "control" }
+	                ]
+	            });
+	        });
+	        
+	        }
+	       
+	       
+	    };
+	 
+	 var saveItem = function(item, isNew) {
+	        $.extend(item, {
+	            name: $("#name").val(),
+	            apbnumber: $("#apbnumber").val(),
+	            address: $("#address").val(),
+	            zipcode: $("#zipcode").val(),
+	            city: $("#city").val(),
+	            phone: $("#phone").val(),
+	            email: $("#email").val(),
+	            website: $("#website").val(),
+	            state: parseInt($("#state").val())
+	        });
+	        
+	        if(isNew){
+	        	$.ajax({
+                    type: "POST",
+                    url: "locations/",
+                    data: item,
+                    success: function(data, textStatus, request){
+                    	showOnMap(data);
+                    	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
+            	        $("#detailsDialog").dialog("close");
+            	    }
+                });
+	        }else{
+	        	$.ajax({
+                    type: "PUT",
+                    url: "locations/",
+                    data: item,
+                    success: function(data, textStatus, request){
+                    	showOnMap(data);
+                    	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
+            	        $("#detailsDialog").dialog("close");
+            	    }
+                });
+	        }
+	 
+	        
+	    };
      
      //{ name: "country", title: "Land", type: "select", width: 100, items: countries, valueField: "id", textField: "name" },
 });
-
 function initializeMap() {
   geocoder = new google.maps.Geocoder();
   var latlng = new google.maps.LatLng(50.8796, 4.7009);//Leuven
@@ -76,7 +241,7 @@ function initializeMap() {
 }
 
 function codeAddress() {
-  var address = $('#address').val();
+  var address = $('#searchaddress').val();
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == 'OK') {
       map.setCenter(results[0].geometry.location);
@@ -98,11 +263,11 @@ function showOnMap(item) {
 	  }
 	  var latlng = new google.maps.LatLng(parseFloat(item.lattitude),parseFloat(item.longitude));
 	  map.setCenter(latlng);
-	  var pinColor1 = "f3da0b"; //geel
-	  var pinColor2 = "35682d"; //green
-	  var pinColor3 = "cb3234"; //red
+	  var pinColor1 = "f3da0b"; //geel state 0 (Zorgpunt)
+	  var pinColor2 = "35682d"; //green state 1
+	  var pinColor3 = "cb3234"; //red state 2
 	  var pinColor = pinColor1;
-	  if(item.state==-1)
+	  if(item.state==2)
 		  pinColor = pinColor3;
 	  if(item.state==1)
 		  pinColor = pinColor2;

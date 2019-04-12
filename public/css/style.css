@@ -38,3 +38,42 @@ a {
     line-height: 30px;
     padding-left: 20px;
 }
+/* Style the form - display items horizontally */
+.form-inline { 
+}
+
+/* Add some margins for each label */
+.form-inline label {
+  margin: 5px 10px 5px 0;
+}
+
+/* Style the input fields */
+.form-inline input {
+  vertical-align: middle;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.input-l{
+	width:300px;
+}
+.input-s{
+	width:150px;
+}
+.input-xs{
+	width:60px;
+}
+.form-inline select{
+	margin: 5px 10px 5px 0;
+  	padding: 10px;
+  	background-color: #fff;
+  	border: 1px solid #ddd;
+}
+.form-inline label{
+	color: darkgray;
+}
+.hidden{
+	display:none;
+}
+
