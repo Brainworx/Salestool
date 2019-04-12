@@ -1,8 +1,99 @@
 var geocoder;
 var map;
 var markers=[];
+var statuslist = [
+                 { name: "", id: 0 },
+                 { name: "Zorgpunt", id: "1" },
+                 { name: "Kan nog", id: "2" },
+                 { name: "Kan niet", id: "3" }
+             ];
 $(function() {
 	initializeMap();
+	  $.ajax({
+          type: "GET",
+          url: "locations/",
+          data:{ name: "", apbnumber: "", zipcode: "", country: "", state: "" }
+	      }).done(function(locations) {
+	      	locations.unshift({ id: "0", name: "" });
+	
+	      	$("#exlusivetygrid").jsGrid({
+	          height: "100%",
+	          width: "100%",
+	          //filtering: true,
+	          inserting: true,
+	          editing: true,
+	          sorting: true,
+	          paging: true,
+	          autoload: false,
+	          pageSize: 10,
+	          pageButtonCount: 5,
+	          deleteConfirm: function(item) {
+	              return "Blokkering zal verwijderd worden. Ben je zeker?";
+	          },
+	          controller: {
+	              loadData: function(filter) {
+	                  return $.ajax({
+	                      type: "GET",
+	                      url: "exclusiveties/",
+	                      data: filter
+//	                      data: {location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""},
+	//                      success: function(data, textStatus, request){
+	//                      	$("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
+	//               	        $("#detailsDialog").dialog( "option", "buttons", 
+	//               	        		  [
+	//               	        		    {
+	//               	        		      text: "Bewaar",
+	//               	        		      click: function() {
+	//               	        		    	  $("#detailsDialog").validate();
+	//               	        		    	  saveItem(item, dialogType === "Nieuwe");
+	//               	        		      }
+	//               	        		    },
+	//               	        		    {
+	//               	        		    	text: "Annuleer",
+	//               		        		    click: function() {
+	//               		        		    	$( this ).dialog( "close" );
+	//               		        		  }
+	//               	        		    }
+	//               	        		  ]
+	//               	        		);
+	//               	        
+	//               	        $("#detailsDialog").dialog("open");
+	//                      }
+	                  });
+	              },
+	              insertItem: function(item) {
+	                  return $.ajax({
+	                      type: "POST",
+	                      url: "exclusiveties/",
+	                      data: item,
+	                      success: function(data, textStatus, request){}
+	                  });
+	              },
+	              updateItem: function(item) {
+	                  return $.ajax({
+	                      type: "PUT",
+	                      url: "exclusiveties/",
+	                      data: item,
+	                      success: function(data, textStatus, request){}
+	                  });
+	              },
+	              deleteItem: function(item) {
+	                  return $.ajax({
+	                      type: "DELETE",
+	                      url: "exclusiveties/",
+	                      data: item,
+	                      success: function(data, textStatus, request){}
+	                  });
+	              }
+	          },
+	          fields: [
+	              { name: "location_id",title:"Zorgpunt", type: "select", items: locations, valueField: "id", textField: "name" },
+	              { name: "blocked_location_id",title:"Apotheek", type: "select", items: locations, valueField: "id", textField: "name" },
+	              { name: "rule_active", type: "checkbox", title: "Ingeschakeld", sorting: false },
+	              { type: "control" }
+	          ]
+	      });
+	  });
 	$("#jsGrid").jsGrid({
          height: "30%",
          width: "100%",
@@ -45,7 +136,7 @@ $(function() {
              { name: "zipcode", title: "Postcode", type: "text", width: 30 },
              { name: "city", title: "Stad", type: "text", width: 50, filtering: false },
              { name: "country", title: "Land", type: "text", width: 20 },
-             { name: "state", type: "text", title: "Status" },
+             { name: "state", type: "select", title: "Status", items:statuslist, valueField: "id", textField: "name"  },
              {
                  type: "control",
                  modeSwitchButton: false,
@@ -71,117 +162,40 @@ $(function() {
             $("#detailsDialog").find(".error").removeClass("error");
         }
     });
-	$("#detailsDialog").validate({
-	        rules: {
-	            //name: "required",
-	        },
-	        messages: {
-	            //name: "Please enter name",
-	        },
-	        submitHandler: function() {
-	            formSubmitHandler();
-	        }
-	    });
-	var formSubmitHandler = $.noop;
+	
 	 
 	var showDetailsDialog = function(dialogType, item) {
-//	        $("#name").val(client.Name);
-//	        $("#married").prop("checked", client.Married);
-	 
-	        formSubmitHandler = function() {
-	            saveItem(item, dialogType === "Nieuwe");
-	        };
+
 	        $('#detailsDialog').find('input').val(function (index, value) {
 	            return item[this.id];
 	        });
 	        $('#detailsDialog').find('select').val(function (index, value) {
 	            return item[this.id];
 	        });
-	        
+	        $("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
+ 	        $("#detailsDialog").dialog("option", "buttons", 
+ 	        		  [
+ 	        		    {
+ 	        		      text: "Bewaar",
+ 	        		      click: function() {
+ 	        		    	  $("#detailsDialog").validate();
+ 	        		    	  saveItem(item, dialogType === "Nieuwe");
+ 	        		      }
+ 	        		    },
+ 	        		    {
+ 	        		    	text: "Annuleer",
+ 		        		    click: function() {
+ 		        		    	$( this ).dialog( "close" );
+ 		        		  }
+ 	        		    }
+ 	        		  ]
+ 	        		);
 	        if(dialogType != "Nieuwe"){
-	        	$.ajax({
-	                type: "GET",
-	                url: "locations/",
-	                data:{ name: "", apbnumber: "", zipcode: "", country: "", state: "" }
-	            }).done(function(locations) {
-	            	$("#exlusivetygrid").jsGrid({
-	                height: "30%",
-	                width: "100%",
-	                filtering: false,
-	                inserting: true,
-	                editing: true,
-	                sorting: true,
-	                paging: true,
-	                autoload: true,
-	                pageSize: 10,
-	                pageButtonCount: 5,
-	                deleteConfirm: function(item) {
-	                    return "Blokkering zal verwijderd worden. Ben je zeker?";
-	                },
-	                controller: {
-	                    loadData: function(filter) {
-	                        return $.ajax({
-	                            type: "GET",
-	                            url: "exclusiveties/",
-	                            data: {location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""},
-	                            success: function(data, textStatus, request){
-	                            	 $("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
-	                     	        $("#detailsDialog").dialog( "option", "buttons", 
-	                     	        		  [
-	                     	        		    {
-	                     	        		      text: "Bewaar",
-	                     	        		      click: function() {
-	                     	        		    	  $("#detailsDialog").validate();
-	                     	        		    	  saveItem(item, dialogType === "Nieuwe");
-	                     	        		      }
-	                     	        		    },
-	                     	        		    {
-	                     	        		    	text: "Annuleer",
-	                     		        		    click: function() {
-	                     		        		    	$( this ).dialog( "close" );
-	                     		        		  }
-	                     	        		    }
-	                     	        		  ]
-	                     	        		);
-	                     	        
-	                     	        $("#detailsDialog").dialog("open");
-	                            }
-	                        });
-	                    },
-	                    insertItem: function(item) {
-	                        return $.ajax({
-	                            type: "POST",
-	                            url: "exclusiveties/",
-	                            data: item,
-	                            success: function(data, textStatus, request){}
-	                        });
-	                    },
-	                    updateItem: function(item) {
-	                        return $.ajax({
-	                            type: "PUT",
-	                            url: "exclusiveties/",
-	                            data: item,
-	                            success: function(data, textStatus, request){}
-	                        });
-	                    },
-	                    deleteItem: function(item) {
-	                        return $.ajax({
-	                            type: "DELETE",
-	                            url: "exclusiveties/",
-	                            data: item,
-	                            success: function(data, textStatus, request){}
-	                        });
-	                    }
-	                },
-	                fields: [
-	                    { name: "location_id",title:"Zorgpunt", type: "select", items: locations, valueField: "id", textField: "name" },
-	                    { name: "blocked_location_id",title:"Apotheek", type: "select", items: locations, valueField: "id", textField: "name" },
-	                    { name: "rule_active", type: "checkbox", title: "Ingeschakeld", sorting: false },
-	                    { type: "control" }
-	                ]
-	            });
-	        });
-	        
+	        	$("#exlusivetygrid").jsGrid("loadData",{location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""}).done(function(){         	        
+         	        $("#detailsDialog").dialog("open");
+	        	});
+	        }else{
+	        	$("#detailsDialog").dialog("open");
 	        }
 	       
 	       
@@ -226,7 +240,7 @@ $(function() {
 	 
 	        
 	    };
-     
+	  
      //{ name: "country", title: "Land", type: "select", width: 100, items: countries, valueField: "id", textField: "name" },
 });
 function initializeMap() {
@@ -263,13 +277,13 @@ function showOnMap(item) {
 	  }
 	  var latlng = new google.maps.LatLng(parseFloat(item.lattitude),parseFloat(item.longitude));
 	  map.setCenter(latlng);
-	  var pinColor1 = "f3da0b"; //geel state 0 (Zorgpunt)
-	  var pinColor2 = "35682d"; //green state 1
-	  var pinColor3 = "cb3234"; //red state 2
+	  var pinColor1 = "f3da0b"; //geel state 1 (Zorgpunt)
+	  var pinColor2 = "35682d"; //green state 2
+	  var pinColor3 = "cb3234"; //red state 3
 	  var pinColor = pinColor1;
-	  if(item.state==2)
+	  if(item.state==3)
 		  pinColor = pinColor3;
-	  if(item.state==1)
+	  if(item.state==2)
 		  pinColor = pinColor2;
 	  var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
 	            new google.maps.Size(21, 34),

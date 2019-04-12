@@ -40,6 +40,7 @@ a {
 }
 /* Style the form - display items horizontally */
 .form-inline { 
+	margin-bottom:10px;
 }
 
 /* Add some margins for each label */
@@ -76,4 +77,6 @@ a {
 .hidden{
 	display:none;
 }
-
+#exclusivetygrid{
+	margin-bottom:10px;
+}
