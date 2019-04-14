@@ -106,7 +106,7 @@ $(function() {
          pageSize: 10,
          pageButtonCount: 5,
          rowClick: function(args) {
-             showDetailsDialog("Edit", args.item);
+             showDetailsDialog("Bewerk", args.item);
          },
          deleteConfirm: function(item) {
              return "Apotheek \"" + item.Name + "\" zal verwijderd worden. Ben je zeker?";
@@ -164,82 +164,7 @@ $(function() {
     });
 	
 	 
-	var showDetailsDialog = function(dialogType, item) {
-
-	        $('#detailsDialog').find('input').val(function (index, value) {
-	            return item[this.id];
-	        });
-	        $('#detailsDialog').find('select').val(function (index, value) {
-	            return item[this.id];
-	        });
-	        $("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
- 	        $("#detailsDialog").dialog("option", "buttons", 
- 	        		  [
- 	        		    {
- 	        		      text: "Bewaar",
- 	        		      click: function() {
- 	        		    	  $("#detailsDialog").validate();
- 	        		    	  saveItem(item, dialogType === "Nieuwe");
- 	        		      }
- 	        		    },
- 	        		    {
- 	        		    	text: "Annuleer",
- 		        		    click: function() {
- 		        		    	$( this ).dialog( "close" );
- 		        		  }
- 	        		    }
- 	        		  ]
- 	        		);
-	        if(dialogType != "Nieuwe"){
-	        	$("#exlusivetygrid").jsGrid("loadData",{location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""}).done(function(){         	        
-         	        $("#detailsDialog").dialog("open");
-	        	});
-	        }else{
-	        	$("#detailsDialog").dialog("open");
-	        }
-	       
-	       
-	    };
-	 
-	 var saveItem = function(item, isNew) {
-	        $.extend(item, {
-	            name: $("#name").val(),
-	            apbnumber: $("#apbnumber").val(),
-	            address: $("#address").val(),
-	            zipcode: $("#zipcode").val(),
-	            city: $("#city").val(),
-	            phone: $("#phone").val(),
-	            email: $("#email").val(),
-	            website: $("#website").val(),
-	            state: parseInt($("#state").val())
-	        });
-	        
-	        if(isNew){
-	        	$.ajax({
-                    type: "POST",
-                    url: "locations/",
-                    data: item,
-                    success: function(data, textStatus, request){
-                    	showOnMap(data);
-                    	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
-            	        $("#detailsDialog").dialog("close");
-            	    }
-                });
-	        }else{
-	        	$.ajax({
-                    type: "PUT",
-                    url: "locations/",
-                    data: item,
-                    success: function(data, textStatus, request){
-                    	showOnMap(data);
-                    	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
-            	        $("#detailsDialog").dialog("close");
-            	    }
-                });
-	        }
-	 
-	        
-	    };
+	
 	  
      //{ name: "country", title: "Land", type: "select", width: 100, items: countries, valueField: "id", textField: "name" },
 });
@@ -253,6 +178,82 @@ function initializeMap() {
   map = new google.maps.Map($('#map')[0], mapOptions);
   $("#locate").click(codeAddress);
 }
+function showDetailsDialog(dialogType, item) {
+
+    $('#detailsDialog').find('input').val(function (index, value) {
+        return item[this.id];
+    });
+    $('#detailsDialog').find('select').val(function (index, value) {
+        return item[this.id];
+    });
+    $("#detailsDialog").dialog("option", "title", dialogType + " apotheek");
+     $("#detailsDialog").dialog("option", "buttons", 
+     		  [
+     		    {
+     		      text: "Bewaar",
+     		      click: function() {
+     		    	  $("#detailsDialog").validate();
+     		    	  saveItem(item, dialogType === "Nieuwe");
+     		      }
+     		    },
+     		    {
+     		    	text: "Annuleer",
+	        		    click: function() {
+	        		    	$( this ).dialog( "close" );
+	        		  }
+     		    }
+     		  ]
+     		);
+    if(dialogType != "Nieuwe"){
+    	$("#exlusivetygrid").jsGrid("loadData",{location_id:""+item.id,blocked_location_id:""+item.id,rule_active:""}).done(function(){         	        
+ 	        $("#detailsDialog").dialog("open");
+    	});
+    }else{
+    	$("#detailsDialog").dialog("open");
+    }
+   
+   
+};
+
+function saveItem(item, isNew) {
+    $.extend(item, {
+        name: $("#name").val(),
+        apbnumber: $("#apbnumber").val(),
+        address: $("#address").val(),
+        zipcode: $("#zipcode").val(),
+        city: $("#city").val(),
+        phone: $("#phone").val(),
+        email: $("#email").val(),
+        website: $("#website").val(),
+        state: parseInt($("#state").val())
+    });
+    
+    if(isNew){
+    	$.ajax({
+            type: "POST",
+            url: "locations/",
+            data: item,
+            success: function(data, textStatus, request){
+            	showOnMap(data);
+            	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
+    	        $("#detailsDialog").dialog("close");
+    	    }
+        });
+    }else{
+    	$.ajax({
+            type: "PUT",
+            url: "locations/",
+            data: item,
+            success: function(data, textStatus, request){
+            	showOnMap(data);
+            	$("#jsGrid").jsGrid(isNew ? "insertItem" : "updateItem", item);                   	 
+    	        $("#detailsDialog").dialog("close");
+    	    }
+        });
+    }
+
+    
+};
 
 function codeAddress() {
   var address = $('#searchaddress').val();
@@ -296,9 +297,7 @@ function showOnMap(item) {
 	      icon: pinImage
 	  });
 	  google.maps.event.addListener(marker, 'click', function() {
-	//      infoWindow.setContent(html);
-	//      infoWindow.open(map, marker);
-		  alert('click marker '+item.id);
+		  showDetailsDialog("Bewerk",item);
 	    });
 	  markers[item.id]=marker;
   }
