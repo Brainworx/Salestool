@@ -79,11 +79,12 @@ class ExclusivetyRepository {
 
     public function insert($data) {
     	$sql = "INSERT INTO exclusivety ( location_id, blocked_location_id, rule_active)
-        		VALUES ( :location_id, :blocked_location_id:rule_active, )";
+        		VALUES ( :location_id, :blocked_location_id, :rule_active, )";
+    	$active = $data["rule_active"]=="false"?0:1;
     	$q = $this->db->prepare($sql);
    		$q->bindParam(":location_id", $data["location_id"], PDO::PARAM_INT);
    		$q->bindParam(":blocked_location_id", $data["blocked_location_id"], PDO::PARAM_INT);
-   		$q->bindParam(":blocked_location_id", $data["rule_active"]==true?1:0, PDO::PARAM_INT);
+   		$q->bindParam(":rule_active", $active);
     	
         $q->execute();
     	

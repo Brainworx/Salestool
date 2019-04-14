@@ -298,7 +298,7 @@ function showOnMap(item) {
 	  google.maps.event.addListener(marker, 'click', function() {
 	//      infoWindow.setContent(html);
 	//      infoWindow.open(map, marker);
-		  alert('click marker');
+		  alert('click marker '+item.id);
 	    });
 	  markers[item.id]=marker;
   }
