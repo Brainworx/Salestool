@@ -14,7 +14,7 @@ class LocationRepository {
 
     private function read($row) {
         $result = new Location();
-        $result->id = $row["id"];
+        $result->id = intval($row["id"]);
         $result->name = $row["name"];
         $result->apbnumber = $row["apbnumber"];
         $result->lattitude = $row["lattitude"];
@@ -26,7 +26,7 @@ class LocationRepository {
         $result->phone = $row["phone"];
         $result->email = $row["email"];
         $result->website = $row["website"];
-        $result->state = $row["state"];
+        $result->state = intval($row["state"]);
         $result->create_dt = $row["create_dt"];
         $result->update_dt = $row["update_dt"];
         
