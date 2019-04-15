@@ -6,7 +6,7 @@ $(function() {
             url: "util/register.php",
             data: {username: $('#username').val(), password: $('#password').val()},
             success: function(data){
-            	$('#errormsg').text(data+"<br><a href='index.html'>Klik hier om terug te gaan</a>");
+            	$('#errormsg').text(data);
             },
 			error: function(data, status, request){
 				$('#errormsg').text(request);
