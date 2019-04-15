@@ -3,9 +3,9 @@ var map;
 var markers=[];
 var statuslist = [
                  { name: "", id: 0 },
-                 { name: "Zorgpunt", id: "1" },
-                 { name: "Kan nog", id: "2" },
-                 { name: "Kan niet", id: "3" }
+                 { name: "Zorgpunt", id: 1 },
+                 { name: "Kan nog", id: 2 },
+                 { name: "Kan niet", id: 3 }
              ];
 $(function() {
 	initializeMap();
@@ -271,7 +271,7 @@ function codeAddress() {
 }
 
 function showOnMap(item) {
-  if(typeof item.lattitude !== 'undefined' && typeof item.longitude !== 'undefined'){
+  if(typeof item.lattitude !== 'undefined' && typeof item.longitude !== 'undefined' && item.lattitude && item.longitude){
 	  if(typeof markers[item.id] !== 'undefined'){
 		  //remove marker
 		  markers[item.id].setMap(null);
