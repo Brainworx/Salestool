@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `location` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Indexen voor geëxporteerde tabellen
+-- Indexen voor geÃ«xporteerde tabellen
 --
 
 --
@@ -31,7 +31,7 @@ ALTER TABLE `location`
  ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT voor geëxporteerde tabellen
+-- AUTO_INCREMENT voor geÃ«xporteerde tabellen
 --
 
 --
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `exclusivety` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Indexen voor geëxporteerde tabellen
+-- Indexen voor geÃ«xporteerde tabellen
 --
 
 --
@@ -63,7 +63,7 @@ ALTER TABLE `Exclusivety`
  ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT voor geëxporteerde tabellen
+-- AUTO_INCREMENT voor geÃ«xporteerde tabellen
 --
 
 --
@@ -80,11 +80,12 @@ CREATE TABLE IF NOT EXISTS `user` (
 `id` int(11) NOT NULL,
   `username` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `rule_active` tinyint(4) NOT NULL DEFAULT '1',
   `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Indexen voor geëxporteerde tabellen
+-- Indexen voor geÃ«xporteerde tabellen
 --
 
 --
@@ -94,7 +95,7 @@ ALTER TABLE `User`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT voor geëxporteerde tabellen
+-- AUTO_INCREMENT voor geÃ«xporteerde tabellen
 --
 
 --
