@@ -1,6 +1,7 @@
 var geocoder;
 var map;
 var markers=[];
+var searchmarker;
 var statuslist = [
                  { name: "", id: 0 },
                  { name: "Zorgpunt", id: 1 },
@@ -95,7 +96,7 @@ $(function() {
 	      });
 	  });
 	$("#jsGrid").jsGrid({
-         height: "30%",
+         height: "40%",
          width: "100%",
          filtering: true,
          //inserting: true,
@@ -117,7 +118,15 @@ $(function() {
                      type: "GET",
                      url: "locations/",
                      data: filter,
-                     success: function(data, textStatus, request){data.forEach(showOnMap);}
+                     success: function(data, textStatus, request){
+						 //hide previous markers on map
+						for (var i = 0; i < markers.length; i++) {
+							  if(typeof markers[i] !== 'undefined')
+									markers[i].setMap(null);
+						}
+						  
+						data.forEach(showOnMap);
+					 }
                  });
              },
              deleteItem: function(item) {
@@ -259,20 +268,31 @@ function codeAddress() {
   var address = $('#searchaddress').val();
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == 'OK') {
+	 if(typeof searchmarker !== 'undefined'){
+		 searchmarker.setMap(null);
+	 }
       map.setCenter(results[0].geometry.location);
-      var marker = new google.maps.Marker({
+      searchmarker = new google.maps.Marker({
           map: map,
           position: results[0].geometry.location
       });
+	  map.setZoom(parseInt($('#searchzoom').val()));
+	  map.panTo(searchmarker.position);
     } else {
       alert('Fout bij zoeken adres: ' + status);
     }
   });
 }
 
+
 function showOnMap(item) {
   if(typeof item.lattitude !== 'undefined' && typeof item.longitude !== 'undefined' && item.lattitude && item.longitude){
 	  if(typeof markers[item.id] !== 'undefined'){
+		  //show existing marker
+		  if(item.lattitude == markers[item.id].getPosition().lat() && item.longitude == markers[item.id].getPosition().lng()){
+			   markers[item.id].setMap(map);
+			  return;
+		  }
 		  //remove marker
 		  markers[item.id].setMap(null);
 	  }
