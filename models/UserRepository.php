@@ -25,14 +25,17 @@ class UserRepository {
 			$stored_secret= $found->password;
 			if (password_verify($password, $stored_secret))
 			{
-			//if ($password=== $found['password'] && $found['active']==1) {
-				// Verification success! User has loggedin!
-				// Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
-				session_regenerate_id();
-				$_SESSION['loggedin'] = TRUE;
-				$_SESSION['name'] = $found->username;
-				$_SESSION['id'] = $found->id;
-				return false;
+				if($found->active){
+					// Verification success! User has loggedin!
+					// Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
+					session_regenerate_id();
+					$_SESSION['loggedin'] = TRUE;
+					$_SESSION['name'] = $found->username;
+					$_SESSION['id'] = $found->id;
+					return false;
+				}else{
+					return "Gebruiker niet actief, contacteer de admin.";
+				}
 			}else{
 				return "Paswoord foutief";
 			}
