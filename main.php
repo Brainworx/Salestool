@@ -27,7 +27,8 @@ $config = include("db/config.php");
 <div id="jsGrid"></div>
 
 <div id="floating-panel">
-    <input id="searchaddress" type="text" value="zoek">
+    <input id="searchaddress" placeholder="Adres" type="text">
+	<select id="searchzoom"><option value=8>10</option><option value=10>20</option><option value=12 selected>30</option><option value=15>40</option></select>
     <input id="locate" type="button" value="Zoek" >
 </div>
   
