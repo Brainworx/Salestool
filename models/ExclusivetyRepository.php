@@ -12,9 +12,9 @@ class ExclusivetyRepository {
 
     private function read($row) {
         $result = new Exclusivety();
-        $result->id = $row["id"];
-        $result->location_id =$row["location_id"];
-        $result->blocked_location_id =$row["blocked_location_id"];
+        $result->id = intval($row["id"]);
+        $result->location_id =intval($row["location_id"]);
+        $result->blocked_location_id =intval($row["blocked_location_id"]);
         $result->rule_active =$row["rule_active"]== 1 ? true : false;
         $result->create_dt = $row["create_dt"];
         $result->update_dt = $row["update_dt"];
@@ -79,7 +79,7 @@ class ExclusivetyRepository {
 
     public function insert($data) {
     	$sql = "INSERT INTO exclusivety ( location_id, blocked_location_id, rule_active)
-        		VALUES ( :location_id, :blocked_location_id, :rule_active, )";
+        		VALUES ( :location_id, :blocked_location_id, :rule_active )";
     	$active = $data["rule_active"]=="false"?0:1;
     	$q = $this->db->prepare($sql);
    		$q->bindParam(":location_id", $data["location_id"], PDO::PARAM_INT);
@@ -92,15 +92,17 @@ class ExclusivetyRepository {
     }
 
     public function update($data) {
-        $sql = "UPDATE exclusivety SET location_id = :location_id, blocked_location_id = :blocked_location_id, rule_active = :rule_active";
+        $sql = "UPDATE exclusivety SET location_id = :location_id, blocked_location_id = :blocked_location_id, rule_active = :rule_active  WHERE id = :id";
 		$active = $data["rule_active"]=="false"?0:1;
         $q = $this->db->prepare($sql);
         $q->bindParam(":location_id", $data["location_id"], PDO::PARAM_INT);
         $q->bindParam(":blocked_location_id", $data["blocked_location_id"], PDO::PARAM_INT);
         $q->bindParam(":rule_active",$active );
+		$q->bindParam(":id", $data["id"], PDO::PARAM_INT);
         $q->execute();
         
-        //return $this->getById($data["id"]);
+		
+        return $this->getById($data["id"]);
     }
     
 
