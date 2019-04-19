@@ -89,7 +89,9 @@ class LocationRepository {
     }
 
     public function update($data) {
-    	$data = $this->getLongLat($data);
+    	if(empty($data["lattitude"])){
+			$data = $this->getLongLat($data);
+		}
         $sql = "UPDATE location SET name = :name, apbnumber = :apbnumber, lattitude = :lattitude, longitude = :longitude, address = :address,
         		zipcode = :zipcode, city = :city, phone = :phone, email = :email, website = :website, state = :state WHERE id = :id";
         $q = $this->db->prepare($sql);
