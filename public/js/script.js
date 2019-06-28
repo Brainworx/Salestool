@@ -314,7 +314,8 @@ function showOnMap(item) {
 	  var marker = new google.maps.Marker({
 	      map: map,
 	      position: latlng,
-	      icon: pinImage
+	      icon: pinImage,
+	      title:item.name
 	  });
 	  google.maps.event.addListener(marker, 'click', function() {
 		  showDetailsDialog("Bewerk",item);
