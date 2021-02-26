@@ -14,9 +14,9 @@ $config = include("db/config.php");
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link href="public/css/style.css" rel="stylesheet" />
-    <link href="http://js-grid.com/css/jsgrid.min.css" rel="stylesheet" />
-    <link href="http://js-grid.com/css/jsgrid-theme.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link href="public/css/jsgrid.min.css" rel="stylesheet" />
+    <link href="public/css/jsgrid-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="public/css/jquery-ui.css" />
     <title>Zorgpunt Salestool</title>
 </head>
 <body>
@@ -64,10 +64,10 @@ $config = include("db/config.php");
 	<div id="exlusivetygrid"></div>
 </div>
 
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
-<script src="http://js-grid.com/js/jsgrid.min.js"></script>
+<script src="public/js/jquery-1.11.3.min.js"></script>
+<script src="public/js/jquery-ui.min.js"></script>
+<script src="public/js/jquery.validate.min.js"></script>
+<script src="public/js/jsgrid.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config["apikey"];?>"></script>
 <script src="public/js/script.js"></script>
 </body>
