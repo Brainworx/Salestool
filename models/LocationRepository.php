@@ -89,9 +89,9 @@ class LocationRepository {
     }
 
     public function update($data) {
-    	if(empty($data["lattitude"])){
+ //   	if(empty($data["lattitude"])){
 			$data = $this->getLongLat($data);
-		}
+//		}*/
         $sql = "UPDATE location SET name = :name, apbnumber = :apbnumber, lattitude = :lattitude, longitude = :longitude, address = :address,
         		zipcode = :zipcode, city = :city, phone = :phone, email = :email, website = :website, state = :state WHERE id = :id";
         $q = $this->db->prepare($sql);
@@ -121,7 +121,8 @@ class LocationRepository {
     private function getLongLat($data){
     	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);
         $key       = $this->config["apikey"];
-    	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key={$key}&address={$address}";
+    	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key=".$key."&address=".$address;
+		
     	$resp_json = file_get_contents($url);
     	$resp      = json_decode($resp_json, true);
     	
