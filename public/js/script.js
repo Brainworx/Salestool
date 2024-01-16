@@ -298,23 +298,19 @@ function showOnMap(item) {
 	  }
 	  var latlng = new google.maps.LatLng(parseFloat(item.lattitude),parseFloat(item.longitude));
 	  map.setCenter(latlng);
-	  var pinColor1 = "f3da0b"; //geel state 1 (Zorgpunt)
-	  var pinColor2 = "35682d"; //green state 2
-	  var pinColor3 = "cb3234"; //red state 3
+	  var pinColor1 = "orange-dot.png";//"f3da0b"; //geel state 1 (Zorgpunt)
+	  var pinColor2 = "green-dot.png";//"35682d"; //green state 2
+	  var pinColor3 = "red-dot.png";//"cb3234"; //red state 3
 	  var pinColor = pinColor1;
 	  if(item.state==3)
 		  pinColor = pinColor3;
 	  if(item.state==2)
 		  pinColor = pinColor2;
-	  var pinImage = new google.maps.MarkerImage("https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-	            new google.maps.Size(21, 34),
-	            new google.maps.Point(0,0),
-	            new google.maps.Point(10, 34));
 
 	  var marker = new google.maps.Marker({
 	      map: map,
 	      position: latlng,
-	      icon: pinImage,
+	      icon: {url:"https://maps.google.com/mapfiles/ms/icons/"+pinColor},
 	      title:item.name
 	  });
 	  google.maps.event.addListener(marker, 'click', function() {

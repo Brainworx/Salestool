@@ -68,7 +68,7 @@ $config = include("db/config.php");
 <script src="public/js/jquery-ui.min.js"></script>
 <script src="public/js/jquery.validate.min.js"></script>
 <script src="public/js/jsgrid.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config["apikey"];?>"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config["apikey"];?>&callback=Function.prototype"></script>
 <script src="public/js/script.js"></script>
 </body>
 </html>
