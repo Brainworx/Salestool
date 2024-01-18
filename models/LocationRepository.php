@@ -39,6 +39,7 @@ class LocationRepository {
         $q->bindParam(":id", $id, PDO::PARAM_INT);
         $q->execute();
         $rows = $q->fetchAll();
+
         return $this->read($rows[0]);
     }
 
@@ -74,8 +75,8 @@ class LocationRepository {
     	$q = $this->db->prepare($sql);
    		$q->bindParam(":name", $data["name"]);
    		$q->bindParam(":apbnumber", $data["apbnumber"]);
-   		$q->bindParam(":longitude", $data["longitude"], PDO::PARAM_INT);
-   		$q->bindParam(":lattitude", $data["lattitude"], PDO::PARAM_INT);
+   		$q->bindParam(":longitude", $data["longitude"]);
+   		$q->bindParam(":lattitude", $data["lattitude"]);
    		$q->bindParam(":address", $data["address"]);
     	$q->bindParam(":zipcode", $data["zipcode"]);
    		$q->bindParam(":city", $data["city"]);
@@ -89,27 +90,39 @@ class LocationRepository {
     }
 
     public function update($data) {
- //   	if(empty($data["lattitude"])){
-			$data = $this->getLongLat($data);
-//		}*/
-        $sql = "UPDATE location SET name = :name, apbnumber = :apbnumber, lattitude = :lattitude, longitude = :longitude, address = :address,
-        		zipcode = :zipcode, city = :city, phone = :phone, email = :email, website = :website, state = :state WHERE id = :id";
-        $q = $this->db->prepare($sql);
-        $q->bindParam(":name", $data["name"]);
-        $q->bindParam(":apbnumber", $data["apbnumber"]);
-        $q->bindParam(":lattitude", $data["lattitude"]);
-        $q->bindParam(":longitude", $data["longitude"]);
-        $q->bindParam(":address", $data["address"]);
-        $q->bindParam(":zipcode", $data["zipcode"]);
-        $q->bindParam(":city", $data["city"]);
-        $q->bindParam(":phone", $data["phone"]);
-        $q->bindParam(":email", $data["email"]);
-        $q->bindParam(":website", $data["website"]);
-        $q->bindParam(":state", $data["state"], PDO::PARAM_INT);
-        $q->bindParam(":id", $data["id"], PDO::PARAM_INT);
-        $q->execute();
-        
+    	$this->updaterecord($data);			
         return $this->getById($data["id"]);
+    }
+    private function updaterecord($data){
+    	
+    	$data = $this->getLongLat($data);
+    	
+		if(!$data){
+			echo ("longlat nok");
+			return false;
+		}
+		
+    	echo ("before ".$data["id"]);
+    	
+    	$sql = "UPDATE location SET name = :name, apbnumber = :apbnumber, lattitude = :lattitude, longitude = :longitude, address = :address,
+        		zipcode = :zipcode, city = :city, phone = :phone, email = :email, website = :website, state = :state WHERE id = :id";
+    	$q = $this->db->prepare($sql);
+    	$q->bindParam(":name", $data["name"]);
+    	$q->bindParam(":apbnumber", $data["apbnumber"]);
+    	$q->bindParam(":lattitude", $data["lattitude"]);
+    	$q->bindParam(":longitude", $data["longitude"]);
+    	$q->bindParam(":address", $data["address"]);
+    	$q->bindParam(":zipcode", $data["zipcode"]);
+    	$q->bindParam(":city", $data["city"]);
+    	$q->bindParam(":phone", $data["phone"]);
+    	$q->bindParam(":email", $data["email"]);
+    	$q->bindParam(":website", $data["website"]);
+    	$q->bindParam(":state", $data["state"], PDO::PARAM_INT);
+    	$q->bindParam(":id", $data["id"], PDO::PARAM_INT);
+    	$q->execute();
+    	echo ("getting: ".$data["id"]." - ");
+    	echo($this->getById($data["id"])->id." updated ");
+
     }
 
     public function remove($id) {
@@ -119,7 +132,7 @@ class LocationRepository {
         $q->execute();
     }
     private function getLongLat($data){
-    	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);
+    	$address   = urlencode($data['address'].', '.$data['zipcode'].' '.$data['city'].', '.$data['country']);//.$data['country'
         $key       = $this->config["apikey"];
     	$url       = "https://maps.googleapis.com/maps/api/geocode/json?key=".$key."&address=".$address;
 		
@@ -134,6 +147,33 @@ class LocationRepository {
     	} else {
     		return false;
     	}	 
+    }
+    private function getAllWithoutLatLong($limit) {
+    	    
+    	$sql = "SELECT * FROM location WHERE lattitude = 0 limit ".$limit;
+    	
+    	$q = $this->db->prepare($sql);
+    	$q->execute();
+    	$rows = $q->fetchAll();
+    
+    	$result = array();
+    	foreach($rows as $row) {
+    		array_push($result, $row);
+    	}
+    	return $result;
+    }
+    public function addMissingLatLong($limit=100){
+
+    	$list = $this->getAllWithoutLatLong($limit);
+    	$counter = 0;
+    	foreach($list as $record){
+    		$this->updaterecord($record);
+    		echo ("update done - ");
+    		$counter++;
+    	}
+    	echo ($counter);
+    	echo (" updates done ");
+    	return $counter;
     }
 
 }
